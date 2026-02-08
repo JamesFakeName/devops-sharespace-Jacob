@@ -36,7 +36,7 @@ def add_entry():
     """Adds new post to the database."""
     if not session.get("logged_in"):
         abort(401)
-    new_entry = models.Post(request.form["title"], request.form["text"], session.get("active_user"))
+    new_entry = models.Post(request.form["title"], request.form["text"], session.get("username"))
     db.session.add(new_entry)
     db.session.commit()
     flash("New entry was successfully posted")
@@ -53,7 +53,6 @@ def login():
             error = "Invalid username or password"
         else:
             session["logged_in"] = True
-            session["active_user"] = user.name
             flash("You were logged in")
             ### Please work
             ### Trying using "username" from login fuction instead of models.User(request.form["name"]
@@ -79,7 +78,6 @@ def new_user():
             db.session.add(newuser)
             db.session.commit()
             session["logged_in"] = True
-            session["active_user"] = user.name
             flash("New User Created")
             #Have to add a thing here too or else new users wouldn't have a display name
             #I have messed up here somehow with user.name again ... 
@@ -95,7 +93,7 @@ def new_user():
 def logout():
     """User logout/authentication/session management."""
     session.pop("logged_in", None)
-    session.pop("active_user", None)
+    session.pop("username", None)
     flash("You were logged out")
     return redirect(url_for("index"))
 
@@ -124,13 +122,11 @@ def search():
         return render_template("search.html", entries=entries, query=query)
     return render_template("search.html")
 
-
-if __name__ == "__main__":
-    app.run()
-
-
+@app.route("/profile/", defaults={"viewed_user": None})
 @app.route("/profile/<string:viewed_user>")
 def view_profile(viewed_user):
+    if not viewed_user:
+        return redirect("/")
     queried_user = db.session.query(models.User).filter_by(name=viewed_user).first()
     if not queried_user:
         flash("User \"%s\" does not exist" % viewed_user)
@@ -138,3 +134,7 @@ def view_profile(viewed_user):
             
     entries = db.session.query(models.Post).filter_by(author=queried_user.name)
     return render_template("userpage.html", user=queried_user, entries=entries)
+
+
+if __name__ == "__main__":
+    app.run()
