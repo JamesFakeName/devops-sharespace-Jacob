@@ -60,7 +60,7 @@
         query.lower() in entry.text.lower() %}
         <li class="entry">
           <h2 id="{{ entry.post_id }}">{{ entry.title }}</h2>
-          {{ entry.text|safe }}
+          {{ entry.text }}
         </li>
         {% endif %} {% endfor %}
       </ul>

@@ -21,7 +21,7 @@
       <li class="entry">
         <h2 id="{{ entry.id }}">{{ entry.title }}</h2>
         <i>By: {{ entry.author }}</i>
-        <p>{{ entry.text|safe }}</p>
+        <p>{{ entry.text }}</p>
       </li>
       {% else %}
       <li><em>This user hasn't made any posts yet.</em></li>

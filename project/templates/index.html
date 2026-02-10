@@ -64,7 +64,7 @@
       <li class="entry">
         <h2 id="{{ entry.id }}">{{ entry.title }}</h2>
         <i>By: <a href="{{ url_for('view_profile', viewed_user=entry.author) }}">{{ entry.author }}</a></i>
-        <p>{{ entry.text|safe }}</p>
+        <p>{{ entry.text }}</p>
       </li>
       {% else %}
       <li><em>No entries yet. Add some!</em></li>
